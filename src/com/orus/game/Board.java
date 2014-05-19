@@ -1,7 +1,6 @@
 package com.orus.game;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
@@ -13,16 +12,17 @@ import javax.swing.JPanel;
 public class Board extends JPanel {
 	private Card newCard;
 	private final String img = "images/craft.png";
-	private Image image;
+	private final String backgroundImgString = "images/dungeon.png";
+	private Image backgroundImage;
 	private int clickX;
 	private int clickY;
-	private Dimension dim;
+	MouseClickCoordinates mouseClickCoords;
 	
 	public Board() {
-		dim = new Dimension(200, 200);
-		setBackground(Color.BLACK);
 		setFocusable(true);
 		init();
+		
+		backgroundImage = (new ImageIcon(getClass().getResource(backgroundImgString)).getImage());
 		
 		addMouseListener(new MouseAdapter() {
 			@Override
@@ -30,30 +30,46 @@ public class Board extends JPanel {
 				clickX = e.getX();
 				clickY = e.getY();
 				
-				if (clickX >= newCard.getX() && clickX <= newCard.getX() + 20 && clickY >= newCard.getY() && clickY <= newCard.getY() + 20) {
-					System.out.println("IT WORKS!!!");
+				mouseClickCoords = new MouseClickCoordinates();
+				mouseClickCoords.setX(clickX);
+				mouseClickCoords.setY(clickY);
+				
+				
+				if (mouseClickCoords.getX() >= newCard.getX() && 
+					mouseClickCoords.getX() <= newCard.getX() + 20 && 
+					mouseClickCoords.getY() >= newCard.getY() && 
+					mouseClickCoords.getY() <= newCard.getY() + 20) {
 					
-					newCard.setX(50);
-					newCard.setY(50);
+					System.out.println("IT WORKS!!!");
+					System.out.println(mouseClickCoords.getX() + " " + mouseClickCoords.getY());
+					
+					//TODO: make side window for card preview, if clicked -> preview = true;
+					newCard.setX(newCard.getX() + 10);
+					newCard.setY(newCard.getY() + 10);
+					
 					repaint();
 				}
 			}
 		});
 	}
 	
+	public void paintComponent(Graphics g) {
+		
+		super.paintComponent(g);
+		 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+	}
+
 	public void init() {
-		newCard = new Card(20, 50);
+		newCard = new Card();
 		ImageIcon ii = new ImageIcon(this.getClass().getResource(img));
 		newCard.setImage(ii.getImage());
 		
-		
+		newCard.setX(100);
+		newCard.setY(200);
+		System.out.println(newCard.getX());
 	}
 	
-	public Image getImage() {
-		return image;
-	}
-	
-	public void drawPesho(Graphics g) {
+	public void drawCard(Graphics g) {
 		g.drawImage(newCard.getImage(), newCard.getX(), newCard.getY(), this);
 	}
 	
@@ -61,15 +77,16 @@ public class Board extends JPanel {
 		super.paint(g);
 		
 		g.setColor(Color.BLACK);
-		drawPesho(g);
+		drawCard(g);
 		
 		g.dispose();
 	}
 	
 	
-	
 //	public void run() {
-//		repaint();
+//		while (true) {
+//			repaint();			
+//		}
 //	}
 		
 }
