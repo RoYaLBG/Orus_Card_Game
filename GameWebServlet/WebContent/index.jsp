@@ -1,0 +1,80 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<script src="http://code.jquery.com/jquery-latest.min.js"
+        type="text/javascript"></script>
+<table border="1">
+	<tr>
+		<td id="computer_magic_1"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="computer_magic_2"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="computer_magic_3"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="computer_magic_4"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="computer_magic_5"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+	</tr>
+	<tr>
+		<td id="computer_battle_1"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="computer_battle_2"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="computer_battle_3"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="computer_battle_4"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="computer_battle_5"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+	</tr>
+		<tr>
+		<td id="realplayer_magic_1"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="realplayer_magic_2"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="realplayer_magic_3"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="realplayer_magic_4"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="realplayer_magic_5"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+	</tr>
+	<tr>
+		<td id="realplayer_battle_1"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="realplayer_battle_2"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="realplayer_battle_3"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="realplayer_battle_4"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+		<td id="realplayer_battle_5"><img src="D:\\SoftUni\\SoftUni_Java\\WebApp\\WebContent\\blank.pnb"/></td>
+	</tr>
+</table>
+<br/>
+<div class="hand">
+</div>
+<a href="#" onclick="return drawCard()">Draw card</a>
+<script>
+function drawCard() {
+	$.post( "MyServler", { action: "drawCard" })
+	.done(function( data ) {
+		obj = $.parseJSON(data);
+		if (obj.error) {
+			return alert(obj.error)
+		}
+		$(".hand").append("<a href='#'"  +
+				"onclick=\"setCard('"+ obj.id +"')\"> <img id='"+obj.id+"' src='"+ obj.url + "'/></a>");
+	});
+}
+
+function setCard(cardId) {
+	$.post( "MyServler", { action: "setOnField", id: cardId })
+	.done(function( data ) {
+		obj = $.parseJSON(data);
+		if (obj.error) {
+			return alert(obj.error)
+		}
+		$("#realplayer_"+obj.type+"_"+obj.freeField).empty();
+		$("#realplayer_"+obj.type+"_"+obj.freeField).append("<a href='#' \"onclick=\""+obj.type+"('"+ cardId +"')\"> <img src='"+ obj.url + "'/></a>");
+		$("#"+cardId).remove();
+		
+	});
+}
+</script>
+
+
+<form action="MyServler" method="post">
+<input type="text" name="user" />
+<input type="submit"/>
+</form>
+</body>
+</html>
